@@ -90,6 +90,8 @@ $(function () {
     // save the div id to use as key in localStorage
     var timeTag = $(this).parent().attr('id');
 
+    // save the event text to localStorage
+    localStorage.setItem(timeTag, textForSavin)
     console.log(textForSavin)
     console.log(timeTag)
   })
