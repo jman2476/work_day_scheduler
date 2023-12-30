@@ -3,7 +3,7 @@
 // in the html.
 $(function () {
   // store current date from dayJS
-  var currentDate = dayjs().hour(13);
+  var currentDate = dayjs();
   // store initial hour object block starting at 9am
   var schedulerIndex = dayjs().hour(9);
   
@@ -16,37 +16,17 @@ $(function () {
     
   }, 1000) // update once per second
   
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  
-  
-  // Function for populating the textboxes with data stored in localStorage
-  function loadText() {
-
-  }
-
-  
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  
-  // Loop over each time box to add in the correct formatting and load saved text
+  // build the html for each time block, using a while loop
+  // it will check local storage and populate the necessary information in the textarea boxes
   while (schedulerIndex.hour() < 18) {
     // set boolean variables for future, past, present based on schedulerIndex and currentDate
-    console.log(schedulerIndex.hour())
     var isPast = schedulerIndex.hour() < currentDate.hour();
     var isPresent = schedulerIndex.hour() === currentDate.hour();
     // if neither isPast or isPresent is true, future will be passed as the else{}
     
     // insert html to create the indexed time block
     // add class of past, present or future based on the time
-    // set the title text for hour to the appropriate hour
+    // set the title text for the row to the appropriate hour
     $('.container-lg').append(`
     <div id= hour-${schedulerIndex.hour()} class="row time-block ${isPast ? 'past' : isPresent ? 'present' : 'future'}">
     <div class="col-2 col-md-1 hour text-center py-3">${schedulerIndex.format('hA')}</div>
@@ -60,27 +40,39 @@ $(function () {
     // 
     
     // run loadText on current time box
-    // loadText(index)
+    loadText(schedulerIndex.hour());
     
     // increment hour
     schedulerIndex = schedulerIndex.add(1, 'hour');
     // 
   }
   
-  
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
+  // Function for populating the textboxes with data stored in localStorage, with an arguement for the hour desired
+  function loadText(hourSelect) {
+    var key = `hour-${hourSelect}`; // save the key of the hour desired
+    // get text for hour from localStorage, set to empty string 
+    var setText = localStorage.getItem(key) || "" ;
+    // set the textarea value to the saved text
+    $(`#hour-${hourSelect}`).children('textarea').val(setText)
+  }
   
   // Make the dang save icons on the buttons spin when you hover over them
-  // the first functions adds the fa-spin class, the second removes it when
-  // hovering is done
+  // the first functions adds the fa-spin class, the second removes it when hovering is done
   $("button").hover(function () {
     $(this).children().addClass("fa-spin")
   }, function () {
     $(this).children().removeClass("fa-spin")
   })
   
+  // Screw it, I'm going to make the header clock spin 
+  // when you hover over the header
+  // and there's nothing you can do to stop me
+  $("header").hover(function () {
+    $(this).children("#currentDay").addClass("fa-spin")
+  }, function () {
+    $(this).children("#currentDay").removeClass("fa-spin")
+  });
+
   // Listener for when a save button is clicked
   $('button').click(function(event) {
     event.stopPropagation(); // stop event propogation
@@ -90,8 +82,9 @@ $(function () {
     // save the div id to use as key in localStorage
     var timeTag = $(this).parent().attr('id');
 
-    console.log(textForSavin)
-    console.log(timeTag)
+    // save the event text to localStorage
+    localStorage.setItem(timeTag, textForSavin)
+    
   })
   
 });
