@@ -64,6 +64,15 @@ $(function () {
     $(this).children().removeClass("fa-spin")
   })
   
+  // Screw it, I'm going to make the header clock spin 
+  // when you hover over the header
+  // and there's nothing you can do to stop me
+  $("header").hover(function () {
+    $(this).children("#currentDay").addClass("fa-spin")
+  }, function () {
+    $(this).children("#currentDay").removeClass("fa-spin")
+  });
+
   // Listener for when a save button is clicked
   $('button').click(function(event) {
     event.stopPropagation(); // stop event propogation
